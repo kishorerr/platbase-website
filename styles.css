@@ -33,9 +33,6 @@
 
 html { scroll-behavior: smooth; font-size: 16px; }
 
-/* Page entrance fade — driven by CSS so no blank-while-fonts-load delay */
-html.page-loading body { opacity: 0; }
-html:not(.page-loading) body { opacity: 1; transition: opacity 0.28s ease; }
 
 body {
   font-family: var(--font);

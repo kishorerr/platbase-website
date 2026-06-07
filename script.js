@@ -99,15 +99,6 @@
     });
   });
 
-  /* ── Page entrance fade ────────────────────────────────────── */
-  // Use CSS class + rAF so the fade is driven by CSS, not a JS opacity lock.
-  // This avoids the body staying invisible while waiting for window.load
-  // (which can be slow when Google Fonts is delayed on mobile networks).
-  document.documentElement.classList.add('page-loading');
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.documentElement.classList.remove('page-loading');
-    });
-  });
+  // No body fade-in — section .reveal animations provide the entrance effect.
 
 })();
