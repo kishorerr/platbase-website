@@ -92,20 +92,22 @@
       const target = document.getElementById(id);
       if (target) {
         e.preventDefault();
-        const offset = 80; // navbar height
+        const offset = 84; // navbar height (76px) + 8px breathing room
         const top    = target.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: 'smooth' });
       }
     });
   });
 
-  /* ── Animate nav entrance ─────────────────────────────────── */
-  document.body.style.opacity = '0';
-  document.body.style.transition = 'opacity 0.28s ease';
-  window.addEventListener('load', () => {
-    document.body.style.opacity = '1';
+  /* ── Page entrance fade ────────────────────────────────────── */
+  // Use CSS class + rAF so the fade is driven by CSS, not a JS opacity lock.
+  // This avoids the body staying invisible while waiting for window.load
+  // (which can be slow when Google Fonts is delayed on mobile networks).
+  document.documentElement.classList.add('page-loading');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.documentElement.classList.remove('page-loading');
+    });
   });
-  // fallback
-  setTimeout(() => { document.body.style.opacity = '1'; }, 300);
 
 })();
