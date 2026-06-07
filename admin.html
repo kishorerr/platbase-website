@@ -593,7 +593,7 @@
 
   /* ── Auth ── */
   function tryRestoreKey() {
-    const saved = sessionStorage.getItem(KEY_STORE);
+    const saved = localStorage.getItem(KEY_STORE);
     if (saved) { adminKey = saved; showDashboard(); }
   }
 
@@ -609,7 +609,7 @@
       });
       if (res.ok) {
         adminKey = key;
-        sessionStorage.setItem(KEY_STORE, key);
+        localStorage.setItem(KEY_STORE, key);
         showDashboard();
       } else {
         loginErr.style.display = 'block';
@@ -625,7 +625,7 @@
   }
 
   function doLogout() {
-    sessionStorage.removeItem(KEY_STORE);
+    localStorage.removeItem(KEY_STORE);
     adminKey = '';
     loginScreen.style.display = 'flex';
     dashboard.style.display = 'none';
