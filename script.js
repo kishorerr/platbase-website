@@ -72,7 +72,49 @@
     els.forEach(el => observer.observe(el));
   })();
 
-  /* ── Form submission (client-side feedback only) ─────────── */
+  /* ── Waitlist form — submit to Formspree via fetch ───────── */
+  const waitlistForm = document.getElementById('waitlist-form');
+  if (waitlistForm) {
+    waitlistForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = waitlistForm.querySelector('button[type="submit"]');
+      const successEl = document.getElementById('waitlist-success');
+
+      // Combine country code + phone into one field for the submission
+      const code  = waitlistForm.querySelector('[name="country_code"]').value.trim();
+      const phone = waitlistForm.querySelector('[name="phone"]').value.trim();
+      waitlistForm.querySelector('[name="phone"]').value = code + ' ' + phone;
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      try {
+        const data = new FormData(waitlistForm);
+        const res  = await fetch(waitlistForm.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          waitlistForm.style.display = 'none';
+          if (successEl) {
+            successEl.classList.add('show');
+            successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Get Early Access →';
+          alert('Something went wrong. Please try again or WhatsApp us directly.');
+        }
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Get Early Access →';
+        alert('Network error. Please try again or WhatsApp us directly.');
+      }
+    });
+  }
+
+  /* ── Other forms (client-side feedback only) ─────────────── */
   document.querySelectorAll('form[data-feedback]').forEach(form => {
     form.addEventListener('submit', e => {
       e.preventDefault();

@@ -1005,6 +1005,22 @@ select.form-control { cursor: pointer; background-image: url("data:image/svg+xml
 }
 .form-label-light { color: rgba(255,255,255,0.9); }
 
+/* Phone number row: country code + number side by side */
+.phone-row {
+  display: flex;
+  gap: 8px;
+}
+.phone-row .phone-code {
+  width: 72px;
+  flex-shrink: 0;
+  text-align: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.phone-row .phone-number {
+  flex: 1;
+}
+
 .form-success {
   background: rgba(27,94,59,0.08);
   border: 1.5px solid rgba(27,94,59,0.2);
