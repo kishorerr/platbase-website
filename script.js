@@ -72,6 +72,18 @@
     els.forEach(el => observer.observe(el));
   })();
 
+  /* ── intl-tel-input for WhatsApp field ───────────────────── */
+  const phoneEl = document.getElementById('waitlist-phone');
+  let iti = null;
+  if (phoneEl && window.intlTelInput) {
+    iti = window.intlTelInput(phoneEl, {
+      initialCountry: 'in',
+      preferredCountries: ['in', 'ae', 'sg', 'gb', 'us'],
+      showSelectedDialCode: true,
+      utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23/build/js/utils.js',
+    });
+  }
+
   /* ── Waitlist form — submit to Formspree via fetch ───────── */
   const waitlistForm = document.getElementById('waitlist-form');
   if (waitlistForm) {
@@ -80,10 +92,11 @@
       const btn = waitlistForm.querySelector('button[type="submit"]');
       const successEl = document.getElementById('waitlist-success');
 
-      // Combine country code + phone into one field for the submission
-      const code  = waitlistForm.querySelector('[name="country_code"]').value.trim();
-      const phone = waitlistForm.querySelector('[name="phone"]').value.trim();
-      waitlistForm.querySelector('[name="phone"]').value = code + ' ' + phone;
+      // Put the full international number (+91 98765 43210) into the hidden field
+      const hiddenPhone = waitlistForm.querySelector('[name="whatsapp_number"]');
+      if (hiddenPhone && iti) {
+        hiddenPhone.value = iti.getNumber();
+      }
 
       btn.disabled = true;
       btn.textContent = 'Sending…';

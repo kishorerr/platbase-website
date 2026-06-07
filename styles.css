@@ -1005,21 +1005,43 @@ select.form-control { cursor: pointer; background-image: url("data:image/svg+xml
 }
 .form-label-light { color: rgba(255,255,255,0.9); }
 
-/* Phone number row: country code + number side by side */
-.phone-row {
-  display: flex;
-  gap: 8px;
+/* ── intl-tel-input overrides (waitlist dark form) ───────────── */
+/* Make the wrapper fill the form column */
+.iti { width: 100%; }
+
+/* Match the flag button to our dark input style */
+.iti--separate-dial-code .iti__selected-flag,
+.iti__selected-flag {
+  background: transparent;
+  border-right: 1px solid rgba(255,255,255,0.25);
+  padding: 0 10px;
 }
-.phone-row .phone-code {
-  width: 72px;
-  flex-shrink: 0;
-  text-align: center;
-  padding-left: 8px;
-  padding-right: 8px;
+.iti__selected-flag:hover,
+.iti__selected-flag:focus {
+  background: rgba(255,255,255,0.1);
 }
-.phone-row .phone-number {
-  flex: 1;
+
+/* Dropdown list */
+.iti__country-list {
+  background: #1b3a6b;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  max-height: 220px;
 }
+.iti__country-list .iti__country:hover,
+.iti__country-list .iti__country.iti__highlight {
+  background: rgba(255,255,255,0.12);
+}
+.iti__search-input {
+  background: rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+}
+.iti__search-input::placeholder { color: rgba(255,255,255,0.5); }
+.iti__dial-code { color: rgba(255,255,255,0.7); }
 
 .form-success {
   background: rgba(27,94,59,0.08);
