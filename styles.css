@@ -339,7 +339,7 @@ section { padding: 100px 0; }
 }
 
 .hero-dot-pattern {
-  position: absolute;
+  position: absolute !important;
   inset: 0;
   background-image: radial-gradient(circle at 1px 1px, rgba(27,58,107,0.09) 1px, transparent 0);
   background-size: 28px 28px;
@@ -347,7 +347,7 @@ section { padding: 100px 0; }
   z-index: 0;
 }
 .hero-glow-1 {
-  position: absolute;
+  position: absolute !important;
   width: 600px; height: 600px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(27,94,59,0.06) 0%, transparent 70%);
@@ -356,7 +356,7 @@ section { padding: 100px 0; }
   z-index: 0;
 }
 .hero-glow-2 {
-  position: absolute;
+  position: absolute !important;
   width: 500px; height: 500px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(27,58,107,0.06) 0%, transparent 70%);
@@ -364,6 +364,7 @@ section { padding: 100px 0; }
   pointer-events: none;
   z-index: 0;
 }
+/* Lift real content above the absolute decorative layers */
 .hero > * { position: relative; z-index: 1; }
 
 .hero-eyebrow {
