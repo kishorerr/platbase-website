@@ -1096,6 +1096,108 @@ select.form-control { cursor: pointer; background-image: url("data:image/svg+xml
 .contact-info-value a { color: var(--navy); transition: color var(--transition); }
 .contact-info-value a:hover { color: var(--green); }
 
+/* ── Privacy Page ────────────────────────────────────────────── */
+.privacy-block {
+  padding-bottom: 48px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--gray-border);
+}
+.privacy-block-last {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.privacy-heading {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+.privacy-access-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+.privacy-access-col {
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+.privacy-access-yes {
+  background: rgba(27, 94, 59, 0.06);
+  border: 1px solid rgba(27, 94, 59, 0.18);
+}
+.privacy-access-no {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.14);
+}
+.privacy-access-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 12px !important;
+}
+.privacy-access-yes .privacy-access-label { color: var(--green); }
+.privacy-access-no  .privacy-access-label { color: #dc2626; }
+.privacy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.privacy-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.privacy-icon-yes { color: #16a34a; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.privacy-icon-no  { color: #dc2626; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.privacy-bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 4px;
+}
+.privacy-bullet-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+.privacy-bullet-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-weight: 700;
+}
+.privacy-callout {
+  margin-top: 20px;
+  background: var(--gray-bg);
+  border-left: 3px solid var(--green);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 18px;
+  font-size: 0.93rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+.privacy-contact-card {
+  background: var(--gray-bg);
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 8px;
+}
+.privacy-contact-card p { font-size: 0.95rem; line-height: 1.9; }
+@media (max-width: 600px) {
+  .privacy-access-grid { grid-template-columns: 1fr; }
+}
+
 /* ── Footer ─────────────────────────────────────────────────── */
 .footer {
   background: var(--navy);

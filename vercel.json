@@ -5,10 +5,18 @@
   "rewrites": [
     { "source": "/batchly",  "destination": "/batchly.html" },
     { "source": "/setup",    "destination": "/setup.html" },
-    { "source": "/contact",  "destination": "/contact.html" }
+    { "source": "/contact",  "destination": "/contact.html" },
+    { "source": "/privacy",  "destination": "/privacy.html" },
+    { "source": "/admin",    "destination": "/admin.html" }
   ],
   "redirects": [
-    { "source": "/home", "destination": "/", "permanent": true }
+    { "source": "/home", "destination": "/", "permanent": true },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.platbase.in" }],
+      "destination": "https://platbase.in/:path*",
+      "permanent": true
+    }
   ],
   "headers": [
     {

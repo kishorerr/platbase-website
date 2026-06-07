@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batchly Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="assets/platbase-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:         #020617;
+      --surface:    #0f172a;
+      --border:     #1e293b;
+      --border2:    #334155;
+      --text:       #f8fafc;
+      --muted:      #94a3b8;
+      --dim:        #475569;
+      --green:      #1B5E3B;
+      --green-mid:  #16a34a;
+      --green-lite: #22c55e;
+      --red:        #ef4444;
+      --amber:      #f59e0b;
+      --blue:       #3b82f6;
+      --radius:     10px;
+      --font:       'Inter', -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Login screen ── */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .login-logo img { height: 32px; }
+    .login-logo span { font-weight: 700; font-size: 1rem; color: var(--text); }
+    .login-badge {
+      display: inline-block;
+      background: rgba(27,94,59,0.2);
+      color: #6ee7b7;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-left: 8px;
+    }
+    .login-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .login-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+    .field-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .field-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .field-input:focus { border-color: var(--green-lite); }
+    .field-input::placeholder { color: var(--dim); }
+    .login-btn {
+      width: 100%;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 13px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .login-btn:hover { background: #236b43; }
+    .login-err {
+      color: var(--red);
+      font-size: 0.82rem;
+      margin-top: 12px;
+      text-align: center;
+      display: none;
+    }
+
+    /* ── Dashboard ── */
+    #dashboard { display: none; }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { height: 28px; }
+    .topbar-title { font-weight: 700; font-size: 0.95rem; }
+    .topbar-badge {
+      background: rgba(27,94,59,0.25);
+      color: #6ee7b7;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      padding: 2px 7px;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-ts { color: var(--dim); font-size: 0.8rem; }
+    .topbar-logout {
+      color: var(--dim);
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .topbar-logout:hover { color: var(--text); border-color: var(--border2); }
+
+    .main { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
+
+    /* ── Overview cards ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .stat-label { color: var(--muted); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+    .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--text); line-height: 1; }
+    .stat-sub { color: var(--dim); font-size: 0.78rem; margin-top: 6px; }
+
+    /* ── Section heading ── */
+    .section-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .refresh-btn {
+      color: var(--muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      font-family: var(--font);
+      transition: color 0.15s;
+    }
+    .refresh-btn:hover { color: var(--text); }
+
+    /* ── Business table ── */
+    .biz-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .biz-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .biz-table th {
+      background: var(--bg);
+      color: var(--dim);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .biz-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--muted);
+    }
+    .biz-table tr:last-child td { border-bottom: none; }
+    .biz-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .biz-name { color: var(--text); font-weight: 600; }
+    .plan-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+    .plan-starter  { background: rgba(71,85,105,0.3);  color: #94a3b8; }
+    .plan-growth   { background: rgba(27,94,59,0.25);  color: #6ee7b7; }
+    .plan-scale    { background: rgba(59,130,246,0.2); color: #93c5fd; }
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .dot-ok     { background: var(--green-lite); }
+    .dot-warn   { background: var(--amber); }
+    .dot-error  { background: var(--red); }
+    .dot-dim    { background: var(--dim); }
+    .detail-btn {
+      color: var(--green-lite);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(34,197,94,0.25);
+      background: transparent;
+      font-family: var(--font);
+      transition: background 0.15s;
+    }
+    .detail-btn:hover { background: rgba(34,197,94,0.08); }
+
+    /* ── Loading / empty ── */
+    .loading-row td {
+      text-align: center;
+      padding: 48px;
+      color: var(--dim);
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--green-lite);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Detail panel (right drawer) ── */
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+    }
+    .drawer-overlay.open { display: block; }
+    .drawer {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 480px;
+      max-width: 95vw;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .drawer-title { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .drawer-close {
+      color: var(--dim);
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-family: var(--font);
+    }
+    .drawer-close:hover { color: var(--text); background: var(--border); }
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .drawer-section { margin-bottom: 28px; }
+    .drawer-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+    .drawer-kv { display: flex; flex-direction: column; gap: 8px; }
+    .drawer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.875rem;
+    }
+    .drawer-key { color: var(--muted); flex-shrink: 0; }
+    .drawer-val { color: var(--text); font-weight: 500; text-align: right; }
+    .tip-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .tip-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .tip-item-name { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+    .tip-status {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .tip-pending  { background: rgba(71,85,105,0.4); color: #94a3b8; }
+    .tip-executed { background: rgba(34,197,94,0.2); color: #86efac; }
+    .tip-skipped  { background: rgba(239,68,68,0.15); color: #fca5a5; }
+    .tip-reasoning { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+    .exec-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .exec-row:last-child { border-bottom: none; }
+    .exec-date { color: var(--muted); width: 80px; flex-shrink: 0; }
+    .exec-bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .exec-bar { height: 100%; background: var(--green-lite); border-radius: 3px; transition: width 0.4s; }
+    .exec-pct { color: var(--text); font-weight: 600; width: 36px; text-align: right; flex-shrink: 0; }
+    .sync-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sync-chip {
+      background: rgba(27,94,59,0.2);
+      color: #6ee7b7;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 5px;
+      padding: 3px 9px;
+    }
+    .drawer-loading { text-align: center; padding: 48px; color: var(--dim); }
+
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .biz-table th:nth-child(3),
+      .biz-table td:nth-child(3),
+      .biz-table th:nth-child(4),
+      .biz-table td:nth-child(4) { display: none; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login ──────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="assets/platbase-logo.png" alt="Platbase" />
+      <span>Batchly <span class="login-badge">Admin</span></span>
+    </div>
+    <p class="login-title">Sign in</p>
+    <p class="login-sub">Enter your admin key to access the dashboard.</p>
+    <label class="field-label" for="key-input">Admin Key</label>
+    <input
+      type="password"
+      id="key-input"
+      class="field-input"
+      placeholder="Paste admin key…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button class="login-btn" id="login-btn">Continue →</button>
+    <p class="login-err" id="login-err">Incorrect key. Please try again.</p>
+  </div>
+</div>
+
+
+<!-- ── Dashboard ──────────────────────────────────────────────── -->
+<div id="dashboard">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="assets/platbase-logo.png" alt="Platbase" class="topbar-logo" />
+      <span class="topbar-title">Batchly</span>
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-ts" id="topbar-ts"></span>
+      <span class="topbar-logout" id="logout-btn">Sign out</span>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- Stats row -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Businesses</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">all plans</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tips today</div>
+        <div class="stat-value" id="stat-tips">—</div>
+        <div class="stat-sub">generated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Synced today</div>
+        <div class="stat-value" id="stat-synced">—</div>
+        <div class="stat-sub">success</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Errors</div>
+        <div class="stat-value" id="stat-errors" style="color: var(--red);">—</div>
+        <div class="stat-sub">need attention</div>
+      </div>
+    </div>
+
+    <!-- Businesses table -->
+    <div class="section-row">
+      <span class="section-title">All Businesses</span>
+      <button class="refresh-btn" id="refresh-btn">↺ Refresh</button>
+    </div>
+
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead>
+          <tr>
+            <th>Business</th>
+            <th>Plan</th>
+            <th>Last sync</th>
+            <th>Tips today</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="biz-tbody">
+          <tr class="loading-row">
+            <td colspan="6"><span class="spinner"></span>Loading…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ── Detail drawer ──────────────────────────────────────────── -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-title" id="drawer-title">Business detail</span>
+    <button class="drawer-close" id="drawer-close">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body">
+    <div class="drawer-loading"><span class="spinner"></span>Loading…</div>
+  </div>
+</div>
+
+
+<script>
+  const API = 'https://batchly-production.up.railway.app';
+  const KEY_STORE = 'batchly_admin_key';
+
+  /* ── State ── */
+  let adminKey = '';
+
+  /* ── Elements ── */
+  const loginScreen  = document.getElementById('login-screen');
+  const dashboard    = document.getElementById('dashboard');
+  const keyInput     = document.getElementById('key-input');
+  const loginBtn     = document.getElementById('login-btn');
+  const loginErr     = document.getElementById('login-err');
+  const logoutBtn    = document.getElementById('logout-btn');
+  const refreshBtn   = document.getElementById('refresh-btn');
+  const tbody        = document.getElementById('biz-tbody');
+  const topbarTs     = document.getElementById('topbar-ts');
+  const drawer       = document.getElementById('drawer');
+  const drawerOverlay= document.getElementById('drawer-overlay');
+  const drawerClose  = document.getElementById('drawer-close');
+  const drawerTitle  = document.getElementById('drawer-title');
+  const drawerBody   = document.getElementById('drawer-body');
+
+  /* ── Helpers ── */
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' });
+  }
+  function fmtTime(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+  function fmtDatetime(iso) {
+    if (!iso) return '—';
+    return fmtDate(iso) + ', ' + fmtTime(iso);
+  }
+  function planClass(plan) {
+    if (!plan) return 'plan-starter';
+    const p = plan.toLowerCase();
+    if (p.includes('growth')) return 'plan-growth';
+    if (p.includes('scale'))  return 'plan-scale';
+    return 'plan-starter';
+  }
+  function planLabel(plan) {
+    if (!plan) return 'Starter';
+    const p = plan.toLowerCase();
+    if (p.includes('growth')) return 'Growth';
+    if (p.includes('scale'))  return 'Scale';
+    return 'Starter';
+  }
+  function daysAgoLabel(d) {
+    if (d === null || d === undefined) return '—';
+    if (d === 0) return 'Today';
+    if (d === 1) return 'Yesterday';
+    return d + ' days ago';
+  }
+
+  /* ── Auth ── */
+  function tryRestoreKey() {
+    const saved = sessionStorage.getItem(KEY_STORE);
+    if (saved) { adminKey = saved; showDashboard(); }
+  }
+
+  async function doLogin() {
+    const key = keyInput.value.trim();
+    if (!key) return;
+    loginBtn.textContent = 'Checking…';
+    loginBtn.disabled = true;
+    loginErr.style.display = 'none';
+    try {
+      const res = await fetch(API + '/admin/overview', {
+        headers: { 'X-Admin-Key': key }
+      });
+      if (res.ok) {
+        adminKey = key;
+        sessionStorage.setItem(KEY_STORE, key);
+        showDashboard();
+      } else {
+        loginErr.style.display = 'block';
+        loginBtn.textContent = 'Continue →';
+        loginBtn.disabled = false;
+      }
+    } catch {
+      loginErr.textContent = 'Could not reach the server. Check your connection.';
+      loginErr.style.display = 'block';
+      loginBtn.textContent = 'Continue →';
+      loginBtn.disabled = false;
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem(KEY_STORE);
+    adminKey = '';
+    loginScreen.style.display = 'flex';
+    dashboard.style.display = 'none';
+    keyInput.value = '';
+  }
+
+  function showDashboard() {
+    loginScreen.style.display = 'none';
+    dashboard.style.display = 'block';
+    loadOverview();
+  }
+
+  /* ── Overview ── */
+  async function loadOverview() {
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="6"><span class="spinner"></span>Loading…</td></tr>';
+    topbarTs.textContent = '';
+    try {
+      const res = await fetch(API + '/admin/overview', {
+        headers: { 'X-Admin-Key': adminKey }
+      });
+      if (!res.ok) { doLogout(); return; }
+      const data = await res.json();
+      renderOverview(data);
+    } catch {
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Failed to load. Check connection.</td></tr>';
+    }
+  }
+
+  function renderOverview(data) {
+    const bizs = data.businesses || [];
+    topbarTs.textContent = 'Updated ' + fmtTime(new Date().toISOString());
+
+    /* Stats */
+    document.getElementById('stat-total').textContent  = bizs.length;
+    document.getElementById('stat-tips').textContent   = bizs.reduce((s, b) => s + (b.tips_generated_today || 0), 0);
+    document.getElementById('stat-synced').textContent = bizs.filter(b => b.last_sync_status === 'success').length;
+    const errs = bizs.filter(b => b.any_errors).length;
+    document.getElementById('stat-errors').textContent = errs;
+    document.getElementById('stat-errors').style.color = errs > 0 ? 'var(--red)' : 'var(--green-lite)';
+
+    /* Table rows */
+    if (bizs.length === 0) {
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No businesses yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = bizs.map(b => {
+      const syncOk  = b.last_sync_status === 'success';
+      const dotCls  = b.any_errors ? 'dot-error' : syncOk ? 'dot-ok' : 'dot-warn';
+      const statusTxt = b.any_errors ? 'Error' : syncOk ? 'Healthy' : (b.last_sync_status || 'Unknown');
+      const daysSince = b.days_since_last_data === null ? '—' : daysAgoLabel(b.days_since_last_data);
+      return `<tr>
+        <td>
+          <div class="biz-name">${esc(b.business_name)}</div>
+          <div style="font-size:0.78rem; color:var(--dim); margin-top:2px;">${esc(b.owner_phone || '—')}</div>
+        </td>
+        <td><span class="plan-badge ${planClass(b.plan)}">${planLabel(b.plan)}</span></td>
+        <td>
+          <div style="color:var(--text); font-size:0.85rem;">${fmtDatetime(b.last_sync_at)}</div>
+          <div style="font-size:0.78rem; color:var(--dim); margin-top:2px;">Data: ${daysSince}</div>
+        </td>
+        <td>
+          <span style="color:var(--text); font-weight:600;">${b.tips_generated_today}</span>
+          <span style="color:var(--dim); font-size:0.78rem;"> gen / ${b.tips_executed_today} done</span>
+        </td>
+        <td><span class="status-dot ${dotCls}"></span><span style="font-size:0.85rem;">${esc(statusTxt)}</span></td>
+        <td><button class="detail-btn" onclick="openDetail(${b.id}, '${esc(b.business_name)}')">View →</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  /* ── Detail drawer ── */
+  function openDetail(bizId, bizName) {
+    drawerTitle.textContent = bizName;
+    drawerBody.innerHTML = '<div class="drawer-loading"><span class="spinner"></span>Loading…</div>';
+    drawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    fetchDetail(bizId);
+  }
+
+  function closeDetail() {
+    drawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+  }
+
+  async function fetchDetail(bizId) {
+    try {
+      const res = await fetch(API + '/admin/businesses/' + bizId, {
+        headers: { 'X-Admin-Key': adminKey }
+      });
+      if (!res.ok) { drawerBody.innerHTML = '<div class="drawer-loading">Failed to load.</div>'; return; }
+      const d = await res.json();
+      renderDetail(d);
+    } catch {
+      drawerBody.innerHTML = '<div class="drawer-loading">Network error.</div>';
+    }
+  }
+
+  function renderDetail(d) {
+    const exec7 = (d.execution_rate_last_7_days || []);
+    const cred  = (d.credential_info || [])[0] || {};
+    const tips  = (d.tips_today || []);
+
+    const execRows = exec7.map(r => {
+      const pct = r.execution_rate !== null ? Math.round(r.execution_rate * 100) : null;
+      const bar = pct !== null ? pct : 0;
+      const label = pct !== null ? pct + '%' : '—';
+      return `<div class="exec-row">
+        <span class="exec-date">${r.date.slice(5)}</span>
+        <div class="exec-bar-wrap"><div class="exec-bar" style="width:${bar}%"></div></div>
+        <span class="exec-pct">${label}</span>
+        <span style="color:var(--dim); font-size:0.75rem;">${r.total} tips</span>
+      </div>`;
+    }).join('');
+
+    const tipRows = tips.length === 0
+      ? '<div style="color:var(--dim); font-size:0.85rem;">No tips today.</div>'
+      : tips.map(t => `<div class="tip-item">
+          <div class="tip-item-top">
+            <span class="tip-item-name">${esc(t.item_name || t.tip_type)}</span>
+            <span class="tip-status tip-${t.status}">${t.status}</span>
+          </div>
+          ${t.item_name ? `<div style="color:var(--dim); font-size:0.75rem; margin-bottom:4px;">${esc(t.tip_type)}</div>` : ''}
+          <div class="tip-reasoning">${esc(t.reasoning || '')}</div>
+          ${t.recommended_qty ? `<div style="color:var(--green-lite); font-size:0.78rem; margin-top:4px; font-weight:600;">Qty: ${t.recommended_qty}</div>` : ''}
+        </div>`).join('');
+
+    const syncChips = (d.sync_history_last_7_days || []).map(date =>
+      `<span class="sync-chip">${date.slice(5)}</span>`
+    ).join('');
+
+    drawerBody.innerHTML = `
+      <!-- Summary -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Summary</div>
+        <div class="drawer-kv">
+          <div class="drawer-row"><span class="drawer-key">Plan</span><span class="drawer-val"><span class="plan-badge ${planClass(d.plan)}">${planLabel(d.plan)}</span></span></div>
+          <div class="drawer-row"><span class="drawer-key">Outlets</span><span class="drawer-val">${d.outlets_connected}</span></div>
+          <div class="drawer-row"><span class="drawer-key">Member since</span><span class="drawer-val">${fmtDate(d.created_at)}</span></div>
+          <div class="drawer-row"><span class="drawer-key">Last sync</span><span class="drawer-val">${fmtDatetime(d.last_sync_at)}</span></div>
+          <div class="drawer-row"><span class="drawer-key">Data freshness</span><span class="drawer-val">${daysAgoLabel(d.days_since_last_data)}</span></div>
+          <div class="drawer-row"><span class="drawer-key">Status</span><span class="drawer-val">${d.any_errors ? '<span style="color:var(--red)">⚠ Error</span>' : '<span style="color:var(--green-lite)">✓ Healthy</span>'}</span></div>
+        </div>
+      </div>
+
+      <!-- Sync history -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Data coverage — last 7 days</div>
+        <div class="sync-chips">${syncChips || '<span style="color:var(--dim); font-size:0.85rem;">No data</span>'}</div>
+      </div>
+
+      <!-- Execution rate -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Tip execution rate — last 7 days</div>
+        ${exec7.length ? execRows : '<div style="color:var(--dim); font-size:0.85rem;">No data yet.</div>'}
+      </div>
+
+      <!-- Tips today -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">Tips today (${tips.length})</div>
+        ${tipRows}
+      </div>
+    `;
+  }
+
+  /* ── XSS escape ── */
+  function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  /* ── Event listeners ── */
+  loginBtn.addEventListener('click', doLogin);
+  keyInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  logoutBtn.addEventListener('click', doLogout);
+  refreshBtn.addEventListener('click', loadOverview);
+  drawerClose.addEventListener('click', closeDetail);
+  drawerOverlay.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+  /* ── Boot ── */
+  tryRestoreKey();
+</script>
+</body>
+</html>
